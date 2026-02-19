@@ -660,18 +660,26 @@ MonoBehaviour:
     headPromptText: Say hello to the little girl, ask her what happened.
     hudTaskText: Say hello to the little girl, ask her what happened.
     girlDialogueText: 
+    completionMode: 1
+    autoCompleteDelay: 2
     requiresRecording: 0
-    headPromptDuration: 5
+    headPromptDuration: 500
+    handler: {fileID: 0}
   - stepId: 1
     headPromptText: It seems that she needs some conforting before we could continue
       / (next) pass her the tissue
     hudTaskText: It seems that she needs some conforting before we could continue
       / (next) pass her the tissue
     girlDialogueText: 
+    completionMode: 1
+    autoCompleteDelay: 2
     requiresRecording: 0
-    headPromptDuration: 5
-  autoStartOnPlay: 1
+    headPromptDuration: 500
+    handler: {fileID: 0}
+  autoStartOnPlay: 0
+  testModeIgnoreConditions: 0
   debugNextKey: 110
+  confirmKey: 32
 --- !u!4 &278397622
 Transform:
   m_ObjectHideFlags: 0
@@ -818,7 +826,7 @@ Transform:
   m_GameObject: {fileID: 318871381}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.5738945, y: -0.20746136, z: 0.05902922}
+  m_LocalPosition: {x: -6.5738945, y: -0.4074614, z: 0.05902922}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1133,6 +1141,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: VRFirstCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 132cb05843e2afc48b1e5eb222df88c4, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1155,6 +1167,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 132cb05843e2afc48b1e5eb222df88c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 543720653}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 132cb05843e2afc48b1e5eb222df88c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 543720657}
   m_SourcePrefab: {fileID: 100100000, guid: 132cb05843e2afc48b1e5eb222df88c4, type: 3}
 --- !u!4 &543720585 stripped
 Transform:
@@ -1621,6 +1636,32 @@ MonoBehaviour:
   - m_Rig: {fileID: 786940870}
     m_Active: 1
   m_Effectors: []
+--- !u!143 &543720657
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 543720651}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1.5
+  m_Radius: 0.3
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &561374387
 GameObject:
   m_ObjectHideFlags: 0
@@ -2163,8 +2204,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2229,8 +2270,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -300, y: -200}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -1000, y: -800}
+  m_SizeDelta: {x: 500, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &828316124
 GameObject:
@@ -3278,6 +3319,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7696548424635294048, guid: 895f6f3c2d334633b5800312285058d2, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 7696548424635294051, guid: 895f6f3c2d334633b5800312285058d2, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.00000020132607
@@ -4262,6 +4307,74 @@ MonoBehaviour:
   maxPause: 2
   pitchRange: {x: 0.9, y: 1.05}
   volumeRange: {x: 0.6, y: 1}
+--- !u!1 &1946136099
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1946136102}
+  - component: {fileID: 1946136101}
+  - component: {fileID: 1946136100}
+  m_Layer: 0
+  m_Name: DialogueTriggerZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1946136100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946136099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 700557217969040dbaed0ab537466ac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueFlow: {fileID: 278397621}
+  playerTag: Player
+--- !u!135 &1946136101
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946136099}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1946136102
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946136099}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.756, y: 0.992, z: 1.512}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1950025200 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6502182839619065283, guid: 946e99d144c59b04dbe58adff143afde, type: 3}
@@ -5138,3 +5251,4 @@ SceneRoots:
   - {fileID: 2117033973}
   - {fileID: 278397622}
   - {fileID: 318871382}
+  - {fileID: 1946136102}
