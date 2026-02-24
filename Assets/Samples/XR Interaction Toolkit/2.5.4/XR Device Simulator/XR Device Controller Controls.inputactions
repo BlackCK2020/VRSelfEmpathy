@@ -7,9 +7,9 @@
             "actions": [
                 {
                     "name": "Axis 2D",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "76f4cfaf-5aeb-4f66-87d2-a63aa567764a",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true

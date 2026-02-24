@@ -4,7 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_Unity Essentials/Scenes/2_KidsRoom_3D_Scene.unity
+    guid: 0007c1bb4959e43b9a37f3a226bc0343
+  - enabled: 1
+    path: Assets/_Unity Essentials/Scenes/FirstSceneWithAvatar.unity
+    guid: febdda3515a14be40a4bddcefe511aa5
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: f9b80f2b4428d9144976485b453a8dc2, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 7de3f115341a03643955a2676bdb7325, type: 2}
