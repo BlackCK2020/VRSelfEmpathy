@@ -28,6 +28,7 @@ public class Step4_StrokeHeadHandler : DialogueStepHandler
 
         if (headTouchSensor.IsTouching)
         {
+            Debug.Log("is touching");
             timer += Time.deltaTime;
             if (timer >= requiredTouchSeconds)
             {
