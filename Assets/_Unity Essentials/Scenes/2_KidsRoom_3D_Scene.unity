@@ -633,6 +633,8 @@ GameObject:
   m_Component:
   - component: {fileID: 278397622}
   - component: {fileID: 278397621}
+  - component: {fileID: 278397629}
+  - component: {fileID: 278397630}
   - component: {fileID: 278397624}
   - component: {fileID: 278397625}
   - component: {fileID: 278397626}
@@ -671,53 +673,116 @@ MonoBehaviour:
   hudMessageDuration: 1.2
   steps:
   - stepId: 1
-    headPromptSegments: []
-    hudTaskText: test rec
+    headPromptSegments:
+    - '......
+
+      (Press A to continue)'
+    - It seems like she's lonely.
+    - Try to say hi to her.
+    hudTaskText: 'Task: Press A, then say hi to her, ask her what happend.'
     girlDialogueText: 
     completionMode: 2
+    showHudOnLastHeadSegment: 0
     autoCompleteDelay: 2
     requiresRecording: 0
     handler: {fileID: 0}
-  - stepId: 0
-    headPromptSegments:
-    - 111
-    - 222
-    hudTaskText: Say hello to the little girl, ask her what happened.
+  - stepId: 1
+    headPromptSegments: []
+    hudTaskText: 
     girlDialogueText: 
     completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 278397629}
+  - stepId: 2
+    headPromptSegments:
+    - It seems like she needs some conforting before we could continue.
+    - You see the teddy bear on your right?
+    - Hand her the little bear.
+    hudTaskText: 'Task:
+
+      Pass her the little bear.'
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 0}
+  - stepId: 3
+    headPromptSegments: []
+    hudTaskText: 
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
     autoCompleteDelay: 2
     requiresRecording: 0
     handler: {fileID: 278397626}
-  - stepId: 1
-    headPromptSegments: []
-    hudTaskText: htt2
+  - stepId: 4
+    headPromptSegments:
+    - Now, gently stroke her head.
+    hudTaskText: 'Task:
+
+      Move your hand to her head, try gently stroking her
+      head'
     girlDialogueText: 
     completionMode: 1
-    autoCompleteDelay: 2
-    requiresRecording: 0
-    handler: {fileID: 0}
-  - stepId: 1
-    headPromptSegments: []
-    hudTaskText: Squat down in front of the little girl
-    girlDialogueText: 
-    completionMode: 1
-    autoCompleteDelay: 2
-    requiresRecording: 0
-    handler: {fileID: 278397624}
-  - stepId: 1
-    headPromptSegments: []
-    hudTaskText: touch
-    girlDialogueText: 
-    completionMode: 1
+    showHudOnLastHeadSegment: 1
     autoCompleteDelay: 2
     requiresRecording: 0
     handler: {fileID: 278397625}
+  - stepId: 5
+    headPromptSegments:
+    - 'Try to comfort her, gently read the following sentence to her:'
+    - "\"I\u2019ve seen how hard you worked. I\u2019m always here with you. Take
+      a little break now; I\u2019m staying here for you.\""
+    hudTaskText: 'Task:
+
+      Press A, and read her the comforting words.'
+    girlDialogueText: 
+    completionMode: 2
+    showHudOnLastHeadSegment: 1
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 0}
+  - stepId: 6
+    headPromptSegments: []
+    hudTaskText: 
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 278397630}
+  - stepId: 7
+    headPromptSegments:
+    - Now, Squat down in front of her, look into her eyes.
+    hudTaskText: "Task: \nSquad down in front of her.\n"
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 1
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 278397624}
+  - stepId: 8
+    headPromptSegments:
+    - Try your best to comfort her. Tell her your sincere thoughts.
+    hudTaskText: 'Task:
+
+      Press A, then tell her your true thoughts.'
+    girlDialogueText: 
+    completionMode: 2
+    showHudOnLastHeadSegment: 1
+    autoCompleteDelay: 2
+    requiresRecording: 1
+    handler: {fileID: 0}
   voiceRecorder: {fileID: 278397627}
   useCompletionModeForRecording: 1
   autoStartOnPlay: 1
   testModeIgnoreConditions: 0
   nextStepAction: {fileID: -1008685349927533351, guid: 146315067a7d442b6989687f69e04e49, type: 3}
   confirmAction: {fileID: 5111741820830381062, guid: 146315067a7d442b6989687f69e04e49, type: 3}
+  clearGirlDialogueOnStepChange: 1
 --- !u!4 &278397622
 Transform:
   m_ObjectHideFlags: 0
@@ -763,8 +828,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   headTouchSensor: {fileID: 1973797934}
-  requiredTouchSeconds: 0.6
+  requiredTouchSeconds: 1
   requireContinuous: 1
+  girlLineOnEnter: Sorry... I'm a failure...
+  showGirlLineOnEnter: 1
 --- !u!114 &278397626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -778,8 +845,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   girlLines:
-  - 1111
-  - 2222
+  - ......
+  - Sorry... I am sorry...
+  - I can't do anything...
+  - I really tries, but nothing works...
+  - Sorry... I'm a failure...
 --- !u!114 &278397627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -897,6 +967,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &278397629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278397620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb287f0da252f4ea88448dd9f209b8c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  silenceText: ......(silence)
+  durationSeconds: 2
+  hideAfter: 1
+--- !u!114 &278397630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278397620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f805aed92bc5c4fdaaa27f12f517ab1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  girlLines:
+  - I wanna give up...
+  - I am a burden to everyone who cares about me...
+  - I don't wanna drag them down anymore...
 --- !u!1 &312424751
 GameObject:
   m_ObjectHideFlags: 0

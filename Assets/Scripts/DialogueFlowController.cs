@@ -29,6 +29,9 @@ public class DialogueFlowController : MonoBehaviour
 
         public StepCompletionMode completionMode = StepCompletionMode.WaitForExternalSignal;
 
+        [Tooltip("If true, when the last head prompt segment is shown, HUD appears immediately (no extra Continue).")]
+        public bool showHudOnLastHeadSegment = false;
+
         [Tooltip("Used when completionMode = AutoAfterDelay")]
         public float autoCompleteDelay = 2f;
 
@@ -88,10 +91,14 @@ public class DialogueFlowController : MonoBehaviour
     private bool flowStarted = false;
     private Coroutine autoCompleteRoutine;
 
+    public bool clearGirlDialogueOnStepChange = true;
+
     // events
     public event Action<int> OnStepStarted;
     public event Action<int> OnStepCompleted;
     public event Action OnPhase1Completed;
+
+    public event Action OnGirlDialogueReachedLastSegment;
 
     // recordings
     private Dictionary<int, AudioClip> recordings = new Dictionary<int, AudioClip>();
@@ -218,7 +225,8 @@ public class DialogueFlowController : MonoBehaviour
         headSegIndex = 0;
 
         // Reset girl bubble state each step (default behavior)
-        ClearGirlDialogue();
+        if (clearGirlDialogueOnStepChange)
+            ClearGirlDialogue();
 
         // Reset HUD color for new step
         if (topRightTaskText != null) topRightTaskText.color = hudNormalColor;
@@ -260,6 +268,14 @@ public class DialogueFlowController : MonoBehaviour
             headSegIndex = 0;
 
             ShowHeadPromptImmediate(segs[0]);
+
+            // NEW: If the first segment is also the last, optionally show HUD immediately
+            if (step.showHudOnLastHeadSegment && segs.Length == 1)
+            {
+                waitingHeadSegments = false;
+                SetupHudForStep(step);
+                StartStepRulesAfterHud(step);
+            }
 
             // HUD stays hidden until last segment appears
             baseHudText = "";
@@ -401,6 +417,10 @@ public class DialogueFlowController : MonoBehaviour
             return;
 
         girlSegIndex++;
+        if (girlSegIndex >= girlSegments.Length - 1)
+        {
+            OnGirlDialogueReachedLastSegment?.Invoke();
+        }
         if (girlBubble != null)
             girlBubble.SetText(girlSegments[girlSegIndex]);
     }
@@ -509,8 +529,8 @@ public class DialogueFlowController : MonoBehaviour
         {
             ShowHeadPromptImmediate(segs[headSegIndex]);
 
-            // When we REACH the last segment, show HUD and start step rules
-            if (headSegIndex == segs.Length - 1)
+            // NEW: If configured, show HUD immediately when last segment is shown
+            if (headSegIndex == segs.Length - 1 && CurrentStep.showHudOnLastHeadSegment)
             {
                 waitingHeadSegments = false;
                 SetupHudForStep(CurrentStep);
@@ -566,6 +586,17 @@ public class DialogueFlowController : MonoBehaviour
         }
 
         Debug.Log("[DialogueFlow] Recordings keys: " + string.Join(", ", recordings.Keys));
+    }
+
+    public void CompleteCurrentStepWithDelay(float delaySeconds)
+    {
+        StartCoroutine(CompleteAfterDelay(delaySeconds));
+    }
+
+    private IEnumerator CompleteAfterDelay(float delaySeconds)
+    {
+        yield return new WaitForSeconds(delaySeconds);
+        CompleteCurrentStep();
     }
 
     // ===== Completion feedback =====

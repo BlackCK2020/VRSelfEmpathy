@@ -1,0 +1,37 @@
+using UnityEngine;
+
+public class Step3_GirlDialogueHandler : DialogueStepHandler
+{
+    [TextArea] public string[] girlLines;
+
+    private DialogueFlowController controller;
+    private bool completed = false;
+
+    public override void OnStepEnter(DialogueFlowController controller, DialogueFlowController.StepDefinition step)
+    {
+        this.controller = controller;
+        completed = false;
+
+        controller.SetGirlDialogueSegments(girlLines, showImmediately: true);
+
+        // Subscribe: when last segment is reached -> complete step
+        controller.OnGirlDialogueReachedLastSegment += HandleReachedLast;
+    }
+
+    public override void OnStepExit(DialogueFlowController controller, DialogueFlowController.StepDefinition step)
+    {
+        controller.OnGirlDialogueReachedLastSegment -= HandleReachedLast;
+        controller.ClearGirlDialogue();
+        this.controller = null;
+        completed = false;
+    }
+
+    private void HandleReachedLast()
+    {
+        if (completed) return;
+        completed = true;
+
+        // Auto-advance to next step
+        controller.CompleteCurrentStep();
+    }
+}
