@@ -2638,6 +2638,7 @@ GameObject:
   - component: {fileID: 602163570}
   - component: {fileID: 602163569}
   - component: {fileID: 602163568}
+  - component: {fileID: 602163577}
   m_Layer: 0
   m_Name: DialogueSystemPhase2
   m_TagString: Untagged
@@ -2677,7 +2678,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -2722,7 +2723,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2870,20 +2871,6 @@ MonoBehaviour:
   hudMessageDuration: 1.2
   steps:
   - stepId: 1
-    headPromptSegments:
-    - '......
-
-      (Press A to continue)'
-    - It seems like she's lonely.
-    - Try to say hi to her.
-    hudTaskText: 'Task: Press A, then say hi to her, ask her what happend.'
-    girlDialogueText: 
-    completionMode: 1
-    showHudOnLastHeadSegment: 0
-    autoCompleteDelay: 2
-    requiresRecording: 1
-    handler: {fileID: 0}
-  - stepId: 1
     headPromptSegments: []
     hudTaskText: 
     girlDialogueText: 
@@ -2891,7 +2878,16 @@ MonoBehaviour:
     showHudOnLastHeadSegment: 0
     autoCompleteDelay: 2
     requiresRecording: 0
-    handler: {fileID: 602163574}
+    handler: {fileID: 0}
+  - stepId: 2
+    headPromptSegments: []
+    hudTaskText: 
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 0}
   - stepId: 2
     headPromptSegments:
     - It seems like she needs some conforting before we could continue.
@@ -3005,6 +3001,30 @@ Transform:
   - {fileID: 730892132}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &602163577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d923f8b9538c84d41af1a2f2baeea293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  phase1Flow: {fileID: 278397621}
+  phase2Flow: {fileID: 602163575}
+  sfxSource2D: {fileID: 602163569}
+  cryingGirlClip: {fileID: 8300000, guid: a99c2a7e846cedb468431507b05cf319, type: 3}
+  completeDelay: 0.1
+  phase2Step_Cry: 1
+  phase2Step_PlayRec1: 2
+  phase2Step_PlayRec2: 6
+  phase2Step_PlayRec3: 8
+  phase1RecordingId_1: 1
+  phase1RecordingId_2: 5
+  phase1RecordingId_3: 8
 --- !u!1 &622022496
 GameObject:
   m_ObjectHideFlags: 0

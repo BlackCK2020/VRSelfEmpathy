@@ -19,7 +19,7 @@ public class Phase2Manager : MonoBehaviour
 
     [Header("Freeze movement after swap (recommended)")]
     [Tooltip("Disable these locomotion providers after teleport so the rig doesn't move.")]
-    public LocomotionProvider[] locomotionToDisable; // Move/Turn/GrabMove/Climb etc.
+    public LocomotionProvider[] locomotionToDisable; 
 
     [Header("Optional: also disable CharacterController movement collisions drift")]
     public CharacterController characterController;
@@ -61,26 +61,37 @@ public class Phase2Manager : MonoBehaviour
 
     private IEnumerator BeginPhase2Routine()
     {
-        // Let any last step UI/events finish
+       
         yield return null;
 
-        // You said: no movement / no follow
+      
         if (adultFollow != null) adultFollow.enabled = false;
         if (childFollow != null) childFollow.enabled = false;
         if (childAnimator != null) childAnimator.enabled = false;
 
-        // Wait for XR pose update so MoveCameraToWorldLocation uses the latest HMD pose
+  
         yield return new WaitForEndOfFrame();
 
-        // 1) Put CAMERA exactly at the child anchor (XR-safe)
+
         MoveCameraExactlyToAnchor(childViewpointAnchor);
 
-        // 2) Freeze locomotion so the rig doesn't move afterwards
+
         DisableLocomotion();
 
-        // 3) Switch dialogue systems
+                if (phase1 != null)
+{
+    phase1.enabled = false;
+}
+
+
         if (dialogueSystemPhase1 != null) dialogueSystemPhase1.SetActive(false);
         if (dialogueSystemPhase2 != null) dialogueSystemPhase2.SetActive(true);
+
+
+
+
+        var phase2Flow = dialogueSystemPhase2.GetComponent<DialogueFlowController>();
+        if (phase2Flow != null) phase2Flow.StartFlow();
     }
 
     private void MoveCameraExactlyToAnchor(Transform anchor)
@@ -91,31 +102,31 @@ public class Phase2Manager : MonoBehaviour
             return;
         }
 
-        // (A) Optional yaw align FIRST (yaw only)
+
         if (matchYawRotation)
         {
             float currentYaw = xrOrigin.Camera.transform.eulerAngles.y;
             float targetYaw = anchor.eulerAngles.y;
             float deltaYaw = Mathf.DeltaAngle(currentYaw, targetYaw);
 
-            // Rotate the rig around the camera so camera stays pinned
+     
             xrOrigin.transform.RotateAround(xrOrigin.Camera.transform.position, Vector3.up, deltaYaw);
         }
 
-        // (B) Now move the rig so CAMERA position matches anchor position exactly
+     
         xrOrigin.MoveCameraToWorldLocation(anchor.position);
     }
 
     private void DisableLocomotion()
     {
-        // Disable locomotion providers (Move/Turn/GrabMove/Climb/etc)
+
         if (locomotionToDisable != null)
         {
             foreach (var p in locomotionToDisable)
                 if (p != null) p.enabled = false;
         }
 
-        // Optional: prevent CharacterController from pushing/stepping
+   
         if (characterController != null)
             characterController.enabled = false;
     }
