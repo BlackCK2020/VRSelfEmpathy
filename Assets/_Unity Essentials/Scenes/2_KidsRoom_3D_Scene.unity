@@ -684,7 +684,7 @@ MonoBehaviour:
     completionMode: 2
     showHudOnLastHeadSegment: 0
     autoCompleteDelay: 2
-    requiresRecording: 0
+    requiresRecording: 1
     handler: {fileID: 0}
   - stepId: 1
     headPromptSegments: []
@@ -743,7 +743,7 @@ MonoBehaviour:
     completionMode: 2
     showHudOnLastHeadSegment: 1
     autoCompleteDelay: 2
-    requiresRecording: 0
+    requiresRecording: 1
     handler: {fileID: 0}
   - stepId: 6
     headPromptSegments: []
@@ -775,6 +775,15 @@ MonoBehaviour:
     showHudOnLastHeadSegment: 1
     autoCompleteDelay: 2
     requiresRecording: 1
+    handler: {fileID: 0}
+  - stepId: 8
+    headPromptSegments: []
+    hudTaskText: 
+    girlDialogueText: 
+    completionMode: 0
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 3
+    requiresRecording: 0
     handler: {fileID: 0}
   voiceRecorder: {fileID: 278397627}
   useCompletionModeForRecording: 1
