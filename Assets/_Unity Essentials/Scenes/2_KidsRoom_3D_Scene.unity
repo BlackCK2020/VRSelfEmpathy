@@ -488,6 +488,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1771034911}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &107586833 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7873184977108000993, guid: 895f6f3c2d334633b5800312285058d2, type: 3}
+  m_PrefabInstance: {fileID: 1366029878}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0cb9aa70a22847b5925ee5f067c10a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &145168872 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1812909498023395591, guid: 946e99d144c59b04dbe58adff143afde, type: 3}
@@ -760,7 +771,7 @@ MonoBehaviour:
     hudTaskText: "Task: \nSquad down in front of her.\n"
     girlDialogueText: 
     completionMode: 1
-    showHudOnLastHeadSegment: 1
+    showHudOnLastHeadSegment: 0
     autoCompleteDelay: 2
     requiresRecording: 0
     handler: {fileID: 278397624}
@@ -772,7 +783,7 @@ MonoBehaviour:
       Press A, then tell her your true thoughts.'
     girlDialogueText: 
     completionMode: 2
-    showHudOnLastHeadSegment: 1
+    showHudOnLastHeadSegment: 0
     autoCompleteDelay: 2
     requiresRecording: 1
     handler: {fileID: 0}
@@ -787,7 +798,7 @@ MonoBehaviour:
     handler: {fileID: 0}
   voiceRecorder: {fileID: 278397627}
   useCompletionModeForRecording: 1
-  autoStartOnPlay: 1
+  autoStartOnPlay: 0
   testModeIgnoreConditions: 0
   nextStepAction: {fileID: -1008685349927533351, guid: 146315067a7d442b6989687f69e04e49, type: 3}
   confirmAction: {fileID: 5111741820830381062, guid: 146315067a7d442b6989687f69e04e49, type: 3}
@@ -2610,6 +2621,421 @@ Transform:
   m_Children: []
   m_Father: {fileID: 278397622}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &602163567
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 602163576}
+  - component: {fileID: 602163575}
+  - component: {fileID: 602163574}
+  - component: {fileID: 602163573}
+  - component: {fileID: 602163572}
+  - component: {fileID: 602163571}
+  - component: {fileID: 602163570}
+  - component: {fileID: 602163569}
+  - component: {fileID: 602163568}
+  m_Layer: 0
+  m_Name: DialogueSystemPhase2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &602163568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9baed598f7be54c16b385b3c0c1989a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recordToggleAction: {fileID: -901753108261285825, guid: 146315067a7d442b6989687f69e04e49, type: 3}
+  recordingEnabled: 1
+  micSelectMode: 0
+  preferredMicIndex: 0
+  preferredMicName: 
+  logDeviceListOnStart: 1
+  maxRecordSeconds: 10
+  frequency: 44100
+  playBackImmediately: 0
+--- !u!82 &602163569
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &602163570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aa8a20c6ba9344348c703976f84e4f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  girlLines:
+  - ......
+  - Sorry... I am sorry...
+  - I can't do anything...
+  - I really tries, but nothing works...
+  - Sorry... I'm a failure...
+--- !u!114 &602163571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77c4dad44f8ea43cbb77e84151f2281a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headTouchSensor: {fileID: 1973797934}
+  requiredTouchSeconds: 1
+  requireContinuous: 1
+  girlLineOnEnter: Sorry... I'm a failure...
+  showGirlLineOnEnter: 1
+--- !u!114 &602163572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fd721c235389492ebc37727576bc87a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requiredDropMeters: 0.2
+  holdSeconds: 0.15
+  resetIfStandUp: 1
+  hmdTransform: {fileID: 343527837}
+--- !u!114 &602163573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f805aed92bc5c4fdaaa27f12f517ab1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  girlLines:
+  - I wanna give up...
+  - I am a burden to everyone who cares about me...
+  - I don't wanna drag them down anymore...
+--- !u!114 &602163574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb287f0da252f4ea88448dd9f209b8c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  silenceText: ......(silence)
+  durationSeconds: 2
+  hideAfter: 1
+--- !u!114 &602163575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23fc62ac69cd24cf4904e200f0f35354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topRightTaskText: {fileID: 787637565}
+  headPromptText: {fileID: 18023315}
+  headPromptAnchor: {fileID: 18023313}
+  girlBubble: {fileID: 428736373}
+  hudNormalColor: {r: 1, g: 1, b: 1, a: 1}
+  hudCompletedColor: {r: 0, g: 1, b: 0, a: 1}
+  completedSuffix: "  \u2713"
+  completedFlashDuration: 0.8
+  uiSfxSource: {fileID: 730892131}
+  stepCompleteSfx: {fileID: 8300000, guid: 02b6350d5d3f0493dbc4585f9887fb10, type: 3}
+  minRecordingSeconds: 1
+  hudMessageDuration: 1.2
+  steps:
+  - stepId: 1
+    headPromptSegments:
+    - '......
+
+      (Press A to continue)'
+    - It seems like she's lonely.
+    - Try to say hi to her.
+    hudTaskText: 'Task: Press A, then say hi to her, ask her what happend.'
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 1
+    handler: {fileID: 0}
+  - stepId: 1
+    headPromptSegments: []
+    hudTaskText: 
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 602163574}
+  - stepId: 2
+    headPromptSegments:
+    - It seems like she needs some conforting before we could continue.
+    - You see the teddy bear on your right?
+    - Hand her the little bear.
+    hudTaskText: 'Task:
+
+      Pass her the little bear.'
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 0}
+  - stepId: 3
+    headPromptSegments: []
+    hudTaskText: 
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 602163570}
+  - stepId: 4
+    headPromptSegments:
+    - Now, gently stroke her head.
+    hudTaskText: 'Task:
+
+      Move your hand to her head, try gently stroking her
+      head'
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 1
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 602163571}
+  - stepId: 5
+    headPromptSegments:
+    - 'Try to comfort her, gently read the following sentence to her:'
+    - "\"I\u2019ve seen how hard you worked. I\u2019m always here with you. Take
+      a little break now; I\u2019m staying here for you.\""
+    hudTaskText: 'Task:
+
+      Press A, and read her the comforting words.'
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 1
+    autoCompleteDelay: 2
+    requiresRecording: 1
+    handler: {fileID: 0}
+  - stepId: 6
+    headPromptSegments: []
+    hudTaskText: 
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 602163573}
+  - stepId: 7
+    headPromptSegments:
+    - Now, Squat down in front of her, look into her eyes.
+    hudTaskText: "Task: \nSquad down in front of her.\n"
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 602163572}
+  - stepId: 8
+    headPromptSegments:
+    - Try your best to comfort her. Tell her your sincere thoughts.
+    hudTaskText: 'Task:
+
+      Press A, then tell her your true thoughts.'
+    girlDialogueText: 
+    completionMode: 1
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 2
+    requiresRecording: 1
+    handler: {fileID: 0}
+  - stepId: 8
+    headPromptSegments: []
+    hudTaskText: 
+    girlDialogueText: 
+    completionMode: 0
+    showHudOnLastHeadSegment: 0
+    autoCompleteDelay: 3
+    requiresRecording: 0
+    handler: {fileID: 0}
+  voiceRecorder: {fileID: 602163568}
+  useCompletionModeForRecording: 1
+  autoStartOnPlay: 0
+  testModeIgnoreConditions: 0
+  nextStepAction: {fileID: -1008685349927533351, guid: 146315067a7d442b6989687f69e04e49, type: 3}
+  confirmAction: {fileID: 5111741820830381062, guid: 146315067a7d442b6989687f69e04e49, type: 3}
+  clearGirlDialogueOnStepChange: 1
+--- !u!4 &602163576
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602163567}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.6163774, y: -0.19424653, z: 1.8077893}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 730892132}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &622022496
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 622022497}
+  m_Layer: 0
+  m_Name: ChildViewPointAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &622022497
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622022496}
+  serializedVersion: 2
+  m_LocalRotation: {x: 9.451512e-10, y: -0, z: -0.000000003129913, w: 1}
+  m_LocalPosition: {x: -1.647522, y: 1.26, z: 1.4358016}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &623722477
 GameObject:
   m_ObjectHideFlags: 0
@@ -2841,6 +3267,134 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 699299359}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &730892130
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 730892132}
+  - component: {fileID: 730892131}
+  m_Layer: 0
+  m_Name: Audio Source
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &730892131
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730892130}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 0.05
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &730892132
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730892130}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 602163576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &745591215
 GameObject:
   m_ObjectHideFlags: 0
@@ -5513,6 +6067,62 @@ MonoBehaviour:
       z: 1
     m_MaintainPositionOffset: 0
     m_MaintainRotationOffset: 0
+--- !u!1 &1647255242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1647255243}
+  - component: {fileID: 1647255244}
+  m_Layer: 0
+  m_Name: Phase2Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1647255243
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647255242}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.2071428, y: 1.5107424, z: 2.8179083}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1647255244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647255242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea3536f5f47958b4b9d5bbdfbef6ced7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  phase1: {fileID: 278397621}
+  phase1EndStepId: 8
+  dialogueSystemPhase1: {fileID: 278397620}
+  dialogueSystemPhase2: {fileID: 602163567}
+  xrOrigin: {fileID: 107586833}
+  childViewpointAnchor: {fileID: 622022497}
+  locomotionToDisable: []
+  characterController: {fileID: 0}
+  adultFollow: {fileID: 543720653}
+  childFollow: {fileID: 1935362159}
+  childAnimator: {fileID: 1935362161}
+  matchYawRotation: 1
 --- !u!1 &1662846228
 GameObject:
   m_ObjectHideFlags: 0
@@ -7406,9 +8016,12 @@ SceneRoots:
   - {fileID: 231182314}
   - {fileID: 2117033973}
   - {fileID: 278397622}
+  - {fileID: 602163576}
   - {fileID: 442036740}
   - {fileID: 318871382}
   - {fileID: 800438779}
   - {fileID: 389272120}
   - {fileID: 1946136102}
   - {fileID: 1250936183}
+  - {fileID: 622022497}
+  - {fileID: 1647255243}
