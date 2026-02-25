@@ -767,23 +767,25 @@ MonoBehaviour:
     handler: {fileID: 278397630}
   - stepId: 7
     headPromptSegments:
-    - Now, Squat down in front of her, look into her eyes.
+    - 'Now, Squat down in front of her, '
+    - Look into her eyes.
     hudTaskText: "Task: \nSquad down in front of her.\n"
     girlDialogueText: 
     completionMode: 1
-    showHudOnLastHeadSegment: 0
+    showHudOnLastHeadSegment: 1
     autoCompleteDelay: 2
     requiresRecording: 0
     handler: {fileID: 278397624}
   - stepId: 8
     headPromptSegments:
-    - Try your best to comfort her. Tell her your sincere thoughts.
+    - 'Now, try your best to comfort her. '
+    - Tell her your sincere thoughts.
     hudTaskText: 'Task:
 
       Press A, then tell her your true thoughts.'
     girlDialogueText: 
     completionMode: 2
-    showHudOnLastHeadSegment: 0
+    showHudOnLastHeadSegment: 1
     autoCompleteDelay: 2
     requiresRecording: 1
     handler: {fileID: 0}
