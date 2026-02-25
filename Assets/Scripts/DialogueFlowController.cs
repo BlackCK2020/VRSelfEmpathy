@@ -1,17 +1,19 @@
+// DialogueFlowController.cs  (FULL, with girl bubble multi-segment controlled by handlers)
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using TMPro;
 
 public class DialogueFlowController : MonoBehaviour
 {
     public enum StepCompletionMode
     {
-        AutoAfterDelay,          // completes automatically after autoCompleteDelay
-        WaitForExternalSignal,   // teammate scripts call CompleteCurrentStep()
-        Recording,               // voice system calls CompleteCurrentStepWithRecording(...)
-        PressConfirmButton       // player presses a confirm key to complete
+        AutoAfterDelay,
+        WaitForExternalSignal,
+        Recording,
+        PressConfirmButton
     }
 
     [Serializable]
@@ -19,40 +21,65 @@ public class DialogueFlowController : MonoBehaviour
     {
         public int stepId;
 
-        [TextArea] public string headPromptText;   // shown briefly above the girl
-        [TextArea] public string hudTaskText;      // shown on top-right HUD until next step
-        [TextArea] public string girlDialogueText; // optional: girl's line (bubble/subtitle later)
+        [Header("Head prompt (multi-segment)")]
+        [TextArea] public string[] headPromptSegments;   // shown segment by segment, continued by confirmAction
+
+        [TextArea] public string hudTaskText;            // shown on top-right HUD (only after last segment)
+        [TextArea] public string girlDialogueText;       // optional legacy (not used if handler drives bubble)
 
         public StepCompletionMode completionMode = StepCompletionMode.WaitForExternalSignal;
 
         [Tooltip("Used when completionMode = AutoAfterDelay")]
         public float autoCompleteDelay = 2f;
 
-        [Tooltip("Used when completionMode = Recording")]
+        [Tooltip("Optional legacy flag (only used if useCompletionModeForRecording = false)")]
         public bool requiresRecording = false;
 
-        [Tooltip("Head prompt display duration (seconds)")]
-        public float headPromptDuration = 1.5f;
-
-        [Tooltip("Optional: per-step handler component for custom logic (actions, animations, triggers, etc.)")]
+        [Tooltip("Optional: per-step handler component for custom logic")]
         public DialogueStepHandler handler; // can be null
     }
 
     [Header("UI References")]
-    public TMP_Text topRightTaskText;
-    public TMP_Text headPromptText;        // world-space TMP text near the girl's head
-    public Transform headPromptAnchor;     // anchor transform on girl's head
+    public TMP_Text topRightTaskText;   // top-right HUD
+    public TMP_Text headPromptText;     // world-space TMP text near the girl's head
+    public Transform headPromptAnchor;  // anchor transform on girl's head
+
+    [Header("Girl Dialogue Bubble (world-space)")]
+    public GirlDialogueBubble girlBubble; // drag bubble root (with GirlDialogueBubble) here
+
+    [Header("Task Completion Feedback (HUD + SFX)")]
+    public Color hudNormalColor = Color.white;
+    public Color hudCompletedColor = Color.green;
+    [Tooltip("Shown briefly when a step completes (appended on HUD).")]
+    public string completedSuffix = "  ✓";
+    public float completedFlashDuration = 0.8f;
+
+    [Tooltip("Optional: assign an AudioSource (2D) for UI SFX.")]
+    public AudioSource uiSfxSource;
+    [Tooltip("Optional: assign a completion sound.")]
+    public AudioClip stepCompleteSfx;
+
+    [Header("Recording Validation (MVP)")]
+    public float minRecordingSeconds = 1.0f;
+    public float hudMessageDuration = 1.2f;
 
     [Header("Steps (MVP)")]
     public List<StepDefinition> steps = new List<StepDefinition>();
+
+    [Header("Voice Recording Integration")]
+    public VoiceRecorderMVP voiceRecorder;
+
+    [Tooltip("If true, record steps are those with completionMode == Recording. If false, use requiresRecording flag.")]
+    public bool useCompletionModeForRecording = true;
 
     [Header("Control")]
     public bool autoStartOnPlay = false;
 
     [Header("Debug / Test Mode")]
-    public bool testModeIgnoreConditions = false;  // if true, ignore conditions
-    public KeyCode debugNextKey = KeyCode.N;       // press to force next step (esp. in test mode)
-    public KeyCode confirmKey = KeyCode.Space;     // used when completionMode = PressConfirmButton
+    public bool testModeIgnoreConditions = false;
+
+    public InputActionReference nextStepAction;   // bind to Keyboard N + Controller button
+    public InputActionReference confirmAction;    // bind to Keyboard Space + Controller button
 
     // state
     public int CurrentStepId { get; private set; } = -1;
@@ -61,15 +88,93 @@ public class DialogueFlowController : MonoBehaviour
     private bool flowStarted = false;
     private Coroutine autoCompleteRoutine;
 
-    // events for teammates
+    // events
     public event Action<int> OnStepStarted;
     public event Action<int> OnStepCompleted;
     public event Action OnPhase1Completed;
+
+    // recordings
+    private Dictionary<int, AudioClip> recordings = new Dictionary<int, AudioClip>();
+    public IReadOnlyDictionary<int, AudioClip> Recordings => recordings;
+
+    // HUD REC status
+    private string baseHudText = "";
+    private bool recOn = false;
+
+    // HUD temp message
+    private Coroutine hudTempMessageRoutine;
+
+    // Head prompt multi-segment state
+    private int headSegIndex = 0;
+    private bool waitingHeadSegments = false; // true = still showing head prompt segments, HUD not shown yet
+
+    // Girl bubble multi-segment state (CONTROLLED BY HANDLERS)
+    private string[] girlSegments = null;
+    private int girlSegIndex = 0;
+    private bool girlDialogueActive = false;
+
+    // completion guard
+    private bool isCompletingStep = false;
+
+    void OnEnable()
+    {
+        if (voiceRecorder != null)
+        {
+            voiceRecorder.OnRecordingStarted += HandleRecStarted;
+            voiceRecorder.OnRecordingStoppedWithClip += HandleRecStopped;
+        }
+
+        if (nextStepAction != null)
+        {
+            nextStepAction.action.performed += OnNextStepPerformed;
+            nextStepAction.action.Enable();
+        }
+
+        if (confirmAction != null)
+        {
+            confirmAction.action.performed += OnConfirmPerformed;
+            confirmAction.action.Enable();
+        }
+    }
+
+    void OnDisable()
+    {
+        if (voiceRecorder != null)
+        {
+            voiceRecorder.OnRecordingStarted -= HandleRecStarted;
+            voiceRecorder.OnRecordingStoppedWithClip -= HandleRecStopped;
+        }
+
+        if (nextStepAction != null)
+        {
+            nextStepAction.action.performed -= OnNextStepPerformed;
+            nextStepAction.action.Disable();
+        }
+
+        if (confirmAction != null)
+        {
+            confirmAction.action.performed -= OnConfirmPerformed;
+            confirmAction.action.Disable();
+        }
+    }
 
     void Start()
     {
         if (headPromptText != null)
             headPromptText.gameObject.SetActive(false);
+
+        // HUD init
+        baseHudText = "";
+        recOn = false;
+        if (topRightTaskText != null) topRightTaskText.color = hudNormalColor;
+        UpdateHudText();
+
+        // Bubble init (hidden)
+        if (girlBubble != null) girlBubble.Show(false);
+
+        // Safety: disable recording until flow says otherwise
+        if (voiceRecorder != null)
+            voiceRecorder.recordingEnabled = false;
 
         if (autoStartOnPlay)
             StartFlow();
@@ -79,42 +184,17 @@ public class DialogueFlowController : MonoBehaviour
     {
         if (!flowStarted) return;
 
-        // Keep head prompt following anchor (basic, no billboard yet)
+        // Follow head anchor
         if (headPromptText != null && headPromptAnchor != null)
             headPromptText.transform.position = headPromptAnchor.position;
 
-        // Test/debug: force completion
-        if (Input.GetKeyDown(debugNextKey))
-        {
-            if (testModeIgnoreConditions)
-            {
-                CompleteCurrentStep();
-            }
-            else
-            {
-                // Allow forcing next even when not in test mode, if you want:
-                // CompleteCurrentStep();
-                // Or keep it strict:
-                Debug.Log("[DialogueFlow] DebugNextKey pressed but testModeIgnoreConditions is OFF.");
-            }
-        }
-
-        // If this step uses "PressConfirmButton", allow confirm key to complete it
-        if (!testModeIgnoreConditions && CurrentStep != null &&
-            CurrentStep.completionMode == StepCompletionMode.PressConfirmButton &&
-            Input.GetKeyDown(confirmKey))
-        {
-            CompleteCurrentStep();
-        }
-
-        // Optional: per-step tick
-        if (!testModeIgnoreConditions && CurrentStep != null && CurrentStep.handler != null)
+        // Optional per-step tick (only after head segments finished, unless you want otherwise)
+        if (!testModeIgnoreConditions && !waitingHeadSegments && CurrentStep != null && CurrentStep.handler != null)
         {
             CurrentStep.handler.Tick(this, CurrentStep);
         }
     }
 
-    // Call this when player enters trigger (Phase 1 start)
     public void StartFlow()
     {
         if (flowStarted) return;
@@ -125,10 +205,27 @@ public class DialogueFlowController : MonoBehaviour
 
     private void MoveNextStep()
     {
-        // cleanup previous step
+        // Cleanup previous step
         StopAutoCompleteRoutineIfAny();
+
         if (CurrentStep != null && CurrentStep.handler != null)
             CurrentStep.handler.OnStepExit(this, CurrentStep);
+
+        // Reset indicators
+        isCompletingStep = false;
+        recOn = false;
+        waitingHeadSegments = false;
+        headSegIndex = 0;
+
+        // Reset girl bubble state each step (default behavior)
+        ClearGirlDialogue();
+
+        // Reset HUD color for new step
+        if (topRightTaskText != null) topRightTaskText.color = hudNormalColor;
+
+        // Hide head prompt when switching steps
+        if (headPromptText != null)
+            headPromptText.gameObject.SetActive(false);
 
         currentIndex++;
 
@@ -136,6 +233,16 @@ public class DialogueFlowController : MonoBehaviour
         {
             Debug.Log("[DialogueFlow] Phase 1 completed.");
             OnPhase1Completed?.Invoke();
+            LogRecordingKeys();
+
+            if (voiceRecorder != null)
+                voiceRecorder.recordingEnabled = false;
+
+            // Clear HUD (optional)
+            baseHudText = "";
+            recOn = false;
+            UpdateHudText();
+
             return;
         }
 
@@ -143,34 +250,78 @@ public class DialogueFlowController : MonoBehaviour
         CurrentStep = step;
         CurrentStepId = step.stepId;
 
-        // 1) show head prompt briefly
-        if (headPromptText != null)
-            StartCoroutine(ShowHeadPrompt(step.headPromptText, step.headPromptDuration));
+        // 1) Start head prompt multi-segment
+        string[] segs = step.headPromptSegments;
+        bool hasSegs = (segs != null && segs.Length > 0);
 
-        // 2) set HUD task text (persistent)
-        if (topRightTaskText != null)
-            topRightTaskText.text = step.hudTaskText;
+        if (hasSegs)
+        {
+            waitingHeadSegments = true;
+            headSegIndex = 0;
 
-        // 3) optional: log girl's dialogue for now
-        if (!string.IsNullOrWhiteSpace(step.girlDialogueText))
-            Debug.Log($"[DialogueFlow] Girl says: {step.girlDialogueText}");
+            ShowHeadPromptImmediate(segs[0]);
+
+            // HUD stays hidden until last segment appears
+            baseHudText = "";
+            recOn = false;
+            UpdateHudText();
+
+            // During head segments: disable recording
+            if (voiceRecorder != null)
+                voiceRecorder.recordingEnabled = false;
+        }
+        else
+        {
+            // No head prompt segments: show HUD immediately and start step rules
+            waitingHeadSegments = false;
+            SetupHudForStep(step);
+            StartStepRulesAfterHud(step);
+        }
 
         Debug.Log($"[DialogueFlow] Step started: {step.stepId} mode={step.completionMode}");
         OnStepStarted?.Invoke(step.stepId);
 
-        // 4) handler hook (teammates can implement per-step behavior here)
+        // 2) handler enter (handler controls bubble + actions)
         if (step.handler != null)
             step.handler.OnStepEnter(this, step);
+    }
 
-        // 5) completion mode setup
+    // Called when we are ready to show HUD for this step (at last head segment)
+    private void SetupHudForStep(StepDefinition step)
+    {
+        bool isRecStepForHud = useCompletionModeForRecording
+            ? (step.completionMode == StepCompletionMode.Recording)
+            : step.requiresRecording;
+
+        baseHudText = isRecStepForHud
+            ? (step.hudTaskText + "\n(Press A to start/stop recording)")
+            : step.hudTaskText;
+
+        recOn = false;
+        UpdateHudText();
+    }
+
+    // Called after HUD appears (start AutoAfterDelay timer / enable recording, etc.)
+    private void StartStepRulesAfterHud(StepDefinition step)
+    {
+        // enable/disable recording based on step (only after HUD is shown)
+        if (voiceRecorder != null)
+        {
+            bool isRecStep = useCompletionModeForRecording
+                ? (step.completionMode == StepCompletionMode.Recording)
+                : step.requiresRecording;
+
+            voiceRecorder.recordingEnabled = isRecStep;
+        }
+
+        // completion mode setup
         if (!testModeIgnoreConditions)
         {
             if (step.completionMode == StepCompletionMode.AutoAfterDelay)
             {
+                StopAutoCompleteRoutineIfAny();
                 autoCompleteRoutine = StartCoroutine(AutoCompleteAfter(step.autoCompleteDelay));
             }
-            // Recording and WaitForExternalSignal are completed by external calls.
-            // PressConfirmButton is handled in Update().
         }
     }
 
@@ -189,41 +340,288 @@ public class DialogueFlowController : MonoBehaviour
         }
     }
 
-    private IEnumerator ShowHeadPrompt(string text, float duration)
+    private void ShowHeadPromptImmediate(string text)
     {
-        if (headPromptText == null) yield break;
+        if (headPromptText == null) return;
 
         headPromptText.text = text;
         headPromptText.gameObject.SetActive(true);
-
-        yield return new WaitForSeconds(duration);
-
-        headPromptText.gameObject.SetActive(false);
     }
 
-    // ==== Public completion APIs for teammates ====
-
-    // Use this for action steps, confirm steps, auto steps, etc.
-    public void CompleteCurrentStep()
+    private void UpdateHudText()
     {
-        if (!flowStarted) return;
+        if (topRightTaskText == null) return;
+
+        if (string.IsNullOrEmpty(baseHudText))
+        {
+            topRightTaskText.text = "";
+            return;
+        }
+
+        topRightTaskText.text = recOn ? (baseHudText + "\n● REC") : baseHudText;
+    }
+
+    // ===== Public API for handlers to drive GIRL dialogue bubble =====
+    public void SetGirlDialogueSegments(string[] segments, bool showImmediately = true)
+    {
+        if (segments == null || segments.Length == 0)
+        {
+            ClearGirlDialogue();
+            return;
+        }
+
+        girlSegments = segments;
+        girlSegIndex = 0;
+        girlDialogueActive = true;
+
+        if (girlBubble != null)
+        {
+            girlBubble.SetText(girlSegments[0]);
+            girlBubble.Show(showImmediately);
+        }
+    }
+
+    public void ClearGirlDialogue()
+    {
+        girlSegments = null;
+        girlSegIndex = 0;
+        girlDialogueActive = false;
+
+        if (girlBubble != null)
+            girlBubble.Show(false);
+    }
+
+    private void ContinueGirlDialogueSegments()
+    {
+        if (!girlDialogueActive) return;
+        if (girlSegments == null || girlSegments.Length == 0) return;
+
+        // if already at last segment, do nothing (do NOT hide)
+        if (girlSegIndex >= girlSegments.Length - 1)
+            return;
+
+        girlSegIndex++;
+        if (girlBubble != null)
+            girlBubble.SetText(girlSegments[girlSegIndex]);
+    }
+
+    // ===== Recorder event handlers =====
+    private void HandleRecStarted()
+    {
         if (CurrentStep == null) return;
+        if (waitingHeadSegments) return;
 
-        Debug.Log($"[DialogueFlow] Step completed: {CurrentStepId}");
-        OnStepCompleted?.Invoke(CurrentStepId);
-        MoveNextStep();
+        bool isRecStep = useCompletionModeForRecording
+            ? (CurrentStep.completionMode == StepCompletionMode.Recording)
+            : CurrentStep.requiresRecording;
+
+        if (!isRecStep) return;
+
+        recOn = true;
+        UpdateHudText();
     }
 
-    // Use this when recording stops (you will call this from your voice system)
-    public void CompleteCurrentStepWithRecording(AudioClip recordedClip)
+    private void HandleRecStopped(AudioClip clip)
     {
-        // For now, just complete. Later you can store recordedClip in a dictionary here.
-        // Example: stepRecordings[CurrentStepId] = recordedClip;
+        if (CurrentStep == null) return;
+        if (waitingHeadSegments) return;
+
+        bool isRecStep = useCompletionModeForRecording
+            ? (CurrentStep.completionMode == StepCompletionMode.Recording)
+            : CurrentStep.requiresRecording;
+
+        if (!isRecStep) return;
+
+        recOn = false;
+        UpdateHudText();
+
+        // Validation
+        if (clip == null)
+        {
+            Debug.LogWarning($"[DialogueFlow] Recording returned null for stepId={CurrentStepId}");
+            ShowHudTempMessage("No voice captured. Please try again.");
+            return;
+        }
+
+        if (clip.length < minRecordingSeconds)
+        {
+            Debug.LogWarning($"[DialogueFlow] Recording too short ({clip.length:F2}s) for stepId={CurrentStepId}");
+            ShowHudTempMessage($"Too short ({clip.length:F1}s). Hold and speak, then stop.");
+            return;
+        }
+
+        recordings[CurrentStepId] = clip;
+        Debug.Log($"[DialogueFlow] Saved recording stepId={CurrentStepId}, length={clip.length:F2}s");
 
         CompleteCurrentStep();
     }
 
-    // Backward-compatible call (if your teammates already call MarkStepComplete(stepId))
+    // ===== Input actions =====
+    private void OnNextStepPerformed(InputAction.CallbackContext ctx)
+    {
+        if (!flowStarted) return;
+        CompleteCurrentStep();
+    }
+
+    private void OnConfirmPerformed(InputAction.CallbackContext ctx)
+    {
+        if (!flowStarted) return;
+        if (testModeIgnoreConditions) return;
+        if (CurrentStep == null) return;
+
+        // Priority 1: head prompt segment continue
+        if (waitingHeadSegments)
+        {
+            ContinueHeadPromptSegments();
+            return;
+        }
+
+        // Priority 2: girl's bubble continue (if active) - do NOT auto hide
+        if (girlDialogueActive)
+        {
+            ContinueGirlDialogueSegments();
+            return;
+        }
+
+        // Priority 3: confirm-to-complete steps
+        if (CurrentStep.completionMode == StepCompletionMode.PressConfirmButton)
+        {
+            CompleteCurrentStep();
+        }
+    }
+
+    private void ContinueHeadPromptSegments()
+    {
+        if (CurrentStep == null) return;
+
+        var segs = CurrentStep.headPromptSegments;
+        if (segs == null || segs.Length == 0)
+        {
+            waitingHeadSegments = false;
+            SetupHudForStep(CurrentStep);
+            StartStepRulesAfterHud(CurrentStep);
+            return;
+        }
+
+        headSegIndex++;
+
+        if (headSegIndex < segs.Length)
+        {
+            ShowHeadPromptImmediate(segs[headSegIndex]);
+
+            // When we REACH the last segment, show HUD and start step rules
+            if (headSegIndex == segs.Length - 1)
+            {
+                waitingHeadSegments = false;
+                SetupHudForStep(CurrentStep);
+                StartStepRulesAfterHud(CurrentStep);
+            }
+        }
+        else
+        {
+            // Safety fallback if somehow goes past end
+            waitingHeadSegments = false;
+            SetupHudForStep(CurrentStep);
+            StartStepRulesAfterHud(CurrentStep);
+        }
+    }
+
+    // ===== HUD temp message =====
+    private void ShowHudTempMessage(string message)
+    {
+        if (topRightTaskText == null) return;
+
+        if (hudTempMessageRoutine != null)
+            StopCoroutine(hudTempMessageRoutine);
+
+        hudTempMessageRoutine = StartCoroutine(HudTempMessageRoutine(message));
+    }
+
+    private IEnumerator HudTempMessageRoutine(string message)
+    {
+        string previousBase = baseHudText;
+        bool previousRec = recOn;
+        Color previousColor = topRightTaskText != null ? topRightTaskText.color : hudNormalColor;
+
+        topRightTaskText.color = hudNormalColor;
+        topRightTaskText.text = message;
+
+        yield return new WaitForSeconds(hudMessageDuration);
+
+        baseHudText = previousBase;
+        recOn = previousRec;
+
+        if (topRightTaskText != null) topRightTaskText.color = previousColor;
+        UpdateHudText();
+
+        hudTempMessageRoutine = null;
+    }
+
+    private void LogRecordingKeys()
+    {
+        if (recordings == null || recordings.Count == 0)
+        {
+            Debug.Log("[DialogueFlow] Recordings: (none)");
+            return;
+        }
+
+        Debug.Log("[DialogueFlow] Recordings keys: " + string.Join(", ", recordings.Keys));
+    }
+
+    // ===== Completion feedback =====
+    private IEnumerator StepCompleteFeedbackThenAdvance()
+    {
+        // Play SFX (optional)
+        if (uiSfxSource != null && stepCompleteSfx != null)
+            uiSfxSource.PlayOneShot(stepCompleteSfx);
+
+        // Show green completed HUD briefly
+        if (topRightTaskText != null)
+        {
+            topRightTaskText.color = hudCompletedColor;
+
+            if (!string.IsNullOrEmpty(baseHudText))
+                topRightTaskText.text = baseHudText + completedSuffix;
+        }
+
+        yield return new WaitForSeconds(completedFlashDuration);
+
+        // restore normal color before next step
+        if (topRightTaskText != null)
+            topRightTaskText.color = hudNormalColor;
+
+        MoveNextStep();
+    }
+
+    // ===== Public completion APIs =====
+    public void CompleteCurrentStep()
+    {
+        if (!flowStarted) return;
+        if (CurrentStep == null) return;
+        if (isCompletingStep) return;
+
+        // Don't allow advancing while recording
+        if (voiceRecorder != null && voiceRecorder.IsRecording)
+        {
+            ShowHudTempMessage("Stop recording first.");
+            return;
+        }
+
+        // If still showing head segments, don't complete (must continue)
+        if (waitingHeadSegments)
+        {
+            ShowHudTempMessage("Continue first.");
+            return;
+        }
+
+        isCompletingStep = true;
+
+        Debug.Log($"[DialogueFlow] Step completed: {CurrentStepId}");
+        OnStepCompleted?.Invoke(CurrentStepId);
+
+        StartCoroutine(StepCompleteFeedbackThenAdvance());
+    }
+
     public void MarkStepComplete(int stepId)
     {
         if (!flowStarted) return;

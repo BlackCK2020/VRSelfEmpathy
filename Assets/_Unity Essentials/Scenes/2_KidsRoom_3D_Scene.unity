@@ -633,9 +633,11 @@ GameObject:
   m_Component:
   - component: {fileID: 278397622}
   - component: {fileID: 278397621}
-  - component: {fileID: 278397623}
   - component: {fileID: 278397624}
   - component: {fileID: 278397625}
+  - component: {fileID: 278397626}
+  - component: {fileID: 278397628}
+  - component: {fileID: 278397627}
   m_Layer: 0
   m_Name: DialogueSystem
   m_TagString: Untagged
@@ -658,56 +660,64 @@ MonoBehaviour:
   topRightTaskText: {fileID: 787637565}
   headPromptText: {fileID: 18023315}
   headPromptAnchor: {fileID: 18023313}
+  girlBubble: {fileID: 428736373}
+  hudNormalColor: {r: 1, g: 1, b: 1, a: 1}
+  hudCompletedColor: {r: 0, g: 1, b: 0, a: 1}
+  completedSuffix: "  \u2713"
+  completedFlashDuration: 0.8
+  uiSfxSource: {fileID: 569043046}
+  stepCompleteSfx: {fileID: 8300000, guid: 02b6350d5d3f0493dbc4585f9887fb10, type: 3}
+  minRecordingSeconds: 1
+  hudMessageDuration: 1.2
   steps:
-  - stepId: 0
-    headPromptText: 
-    hudTaskText: Say hello to the little girl, ask her what happened.
-    girlDialogueText: 
-    completionMode: 1
-    autoCompleteDelay: 2
-    requiresRecording: 0
-    headPromptDuration: 1.5
-    handler: {fileID: 0}
   - stepId: 1
-    headPromptText: 
-    hudTaskText: htt2
-    girlDialogueText: 
-    completionMode: 1
-    autoCompleteDelay: 2
-    requiresRecording: 0
-    headPromptDuration: 1.5
-    handler: {fileID: 0}
-  - stepId: 1
-    headPromptText: 
+    headPromptSegments: []
     hudTaskText: test rec
     girlDialogueText: 
     completionMode: 2
     autoCompleteDelay: 2
     requiresRecording: 0
-    headPromptDuration: 1.5
+    handler: {fileID: 0}
+  - stepId: 0
+    headPromptSegments:
+    - 111
+    - 222
+    hudTaskText: Say hello to the little girl, ask her what happened.
+    girlDialogueText: 
+    completionMode: 1
+    autoCompleteDelay: 2
+    requiresRecording: 0
+    handler: {fileID: 278397626}
+  - stepId: 1
+    headPromptSegments: []
+    hudTaskText: htt2
+    girlDialogueText: 
+    completionMode: 1
+    autoCompleteDelay: 2
+    requiresRecording: 0
     handler: {fileID: 0}
   - stepId: 1
-    headPromptText: 
+    headPromptSegments: []
     hudTaskText: Squat down in front of the little girl
     girlDialogueText: 
     completionMode: 1
     autoCompleteDelay: 2
     requiresRecording: 0
-    headPromptDuration: 1.5
     handler: {fileID: 278397624}
   - stepId: 1
-    headPromptText: 
+    headPromptSegments: []
     hudTaskText: touch
     girlDialogueText: 
     completionMode: 1
     autoCompleteDelay: 2
     requiresRecording: 0
-    headPromptDuration: 1.5
     handler: {fileID: 278397625}
-  autoStartOnPlay: 0
+  voiceRecorder: {fileID: 278397627}
+  useCompletionModeForRecording: 1
+  autoStartOnPlay: 1
   testModeIgnoreConditions: 0
-  debugNextKey: 110
-  confirmKey: 32
+  nextStepAction: {fileID: -1008685349927533351, guid: 146315067a7d442b6989687f69e04e49, type: 3}
+  confirmAction: {fileID: 5111741820830381062, guid: 146315067a7d442b6989687f69e04e49, type: 3}
 --- !u!4 &278397622
 Transform:
   m_ObjectHideFlags: 0
@@ -724,18 +734,6 @@ Transform:
   - {fileID: 569043047}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &278397623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 278397620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12b8ad57b7524d97a7a6a8f20fc89d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &278397624
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -767,6 +765,138 @@ MonoBehaviour:
   headTouchSensor: {fileID: 1973797934}
   requiredTouchSeconds: 0.6
   requireContinuous: 1
+--- !u!114 &278397626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278397620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aa8a20c6ba9344348c703976f84e4f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  girlLines:
+  - 1111
+  - 2222
+--- !u!114 &278397627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278397620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9baed598f7be54c16b385b3c0c1989a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recordToggleAction: {fileID: -901753108261285825, guid: 146315067a7d442b6989687f69e04e49, type: 3}
+  recordingEnabled: 1
+  micSelectMode: 0
+  preferredMicIndex: 0
+  preferredMicName: 
+  logDeviceListOnStart: 1
+  maxRecordSeconds: 10
+  frequency: 44100
+  playBackImmediately: 0
+--- !u!82 &278397628
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278397620}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &312424751
 GameObject:
   m_ObjectHideFlags: 0
@@ -2271,7 +2401,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3775,7 +3905,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 946e99d144c59b04dbe58adff143afde, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.96
+      value: 4.84
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 946e99d144c59b04dbe58adff143afde, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3783,7 +3913,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 946e99d144c59b04dbe58adff143afde, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.05
+      value: 1.37
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 946e99d144c59b04dbe58adff143afde, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6345,7 +6475,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2004798569
 Transform:
   m_ObjectHideFlags: 0
